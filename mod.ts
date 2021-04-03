@@ -1,6 +1,12 @@
 // https://github.com/denoland/deploy_examples/blob/main/json_html/mod.js
 
-function handleRequest(request) {
+// https://github.com/microsoft/TypeScript/blob/master/lib/lib.webworker.d.ts
+interface Responder {
+  request: Request;
+  respondWith(res: Response): void;
+}
+
+function handleRequest(request: Request) {
   const { pathname } = new URL(request.url);
 
   if (pathname.startsWith("/html")) {
@@ -49,5 +55,6 @@ function handleRequest(request) {
 }
 
 addEventListener("fetch", (event) => {
-  event.respondWith(handleRequest(event.request));
+  const e = (event as unknown) as Responder;
+  e.respondWith(handleRequest(e.request));
 });
